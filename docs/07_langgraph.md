@@ -2,114 +2,104 @@
 
 ## この章で学ぶこと
 
-この章では、Agentの処理フローを **LangGraph** を使って表現します。
+この章では、Agentの処理フローをGraphとして表現する **LangGraph** の基本を学びます。
 
 この章を読み終えると、以下のことができるようになります。
 
-- LangGraphが何のためのライブラリなのか説明できる
-- State、Node、Edge、Graphの基本概念を理解する
+- State、Node、Edge、Graphの基本概念を説明できる
 - 処理の流れをGraphとして考えられる
-- Python関数をNodeとして登録できる
-- Node同士をEdgeで接続できる
+- LangGraphで簡単なGraphを作成できる
 - Stateを使ってNode間でデータを受け渡せる
-- 条件によって処理を分岐できる
-- Chapter 6で作ったAgentの処理をGraphとして理解できる
+- Chapter 6で作ったAgentをGraphとして考えられる
+
+Chapter 6では、
+
+```text
+Agent
+ │
+ ├── LLMで判断
+ ├── Toolを選択
+ ├── Toolを実行
+ └── 結果を見て再び判断
+```
+
+というAgentを作りました。
+
+Chapter 7では、この**処理の流れそのもの**に注目します。
 
 ---
 
-## 1. Chapter 6のおさらい
+## 1. LangGraphとは
 
-Chapter 6では、単一Agentを作りました。
-
-Agentは、
+Chapter 6では、Agentが、
 
 ```text
 考える
-  ↓
+   ↓
 Toolを使う
-  ↓
+   ↓
 結果を見る
-  ↓
+   ↓
 もう一度考える
-  ↓
-...
-  ↓
-回答する
 ```
 
-という処理を行っていました。
+という処理を繰り返しました。
 
-図にすると次のようになります。
+処理が単純なうちは問題ありません。
 
-```mermaid
-flowchart TD
-    A["LLMが判断"] --> B{"Toolが必要？"}
-
-    B -->|"YES"| C["Toolを実行"]
-    C --> D["Tool Result"]
-    D --> A
-
-    B -->|"NO"| E["Answer"]
-```
-
-Chapter 6では、この処理をAgentに任せました。
-
-Chapter 7では一歩進んで、
-
-> **この処理フローそのものをGraphとして考える**
-
-ことを学びます。
-
----
-
-# 2. LangGraphとは
-
-LangGraphは、LLMやAgentの処理を**Graph構造として構築するためのライブラリ**です。
-
-例えば、
+しかし、処理が増えて、
 
 ```text
-入力
- ↓
-LLM
- ↓
-Tool
- ↓
-LLM
- ↓
-回答
+入力を確認する
+      ↓
+LLMで判断する
+      ↓
+Toolを使う
+      ↓
+結果を確認する
+      ↓
+別の処理へ進む
 ```
 
-という処理があるとします。
+となると、
 
-LangGraphでは、この処理を次のようなGraphとして表現できます。
+> **処理全体がどう流れているのか**
+
+を管理する必要があります。
+
+そこで利用できるのが **LangGraph** です。
+
+LangGraphでは、処理をGraphとして表現します。
 
 ```mermaid
-flowchart TD
+flowchart LR
     START(["START"])
-    AGENT["Agent"]
-    TOOL["Tool"]
+
+    A["処理A"]
+
+    B["処理B"]
+
+    C["処理C"]
+
     END(["END"])
 
-    START --> AGENT
-
-    AGENT -->|"Toolが必要"| TOOL
-    TOOL --> AGENT
-
-    AGENT -->|"回答できる"| END
+    START --> A
+    A --> B
+    B --> C
+    C --> END
 ```
 
-コードだけで処理を考えるのではなく、
+つまり、
 
-> **どの処理から、どの処理へ進むのか**
+> **LangGraph = AgentやLLMの処理フローをGraphとして組み立てる仕組み**
 
-をGraphとして設計します。
+と考えてください。
 
 ---
 
-# 3. まず4つの言葉を覚える
+## 2. State・Node・Edge・Graph
 
-LangGraphを理解するために、まず次の4つを覚えます。
+LangGraphを理解するために、最初に4つの言葉を覚えます。
 
 | 用語 | 意味 |
 | --- | --- |
@@ -118,386 +108,141 @@ LangGraphを理解するために、まず次の4つを覚えます。
 | Edge | Node同士のつながり |
 | Graph | 処理全体の流れ |
 
-最初は、これだけ覚えておけば十分です。
+まずは、
 
 ```text
 State = データ
 
-Node  = 処理
+Node = 処理
 
-Edge  = 道
+Edge = 道
 
 Graph = 全体
 ```
 
-例えば、
-
-```text
-10と20を足してください
-```
-
-というデータを受け取って処理する場合を考えてみます。
-
-```mermaid
-flowchart LR
-    A["START"] --> B["LLM Node"]
-    B --> C["END"]
-```
-
-このとき、
-
-```text
-「10と20を足してください」
-```
-
-という情報を持っているのが **State** です。
-
-LLMを呼び出す処理が **Node** です。
-
-```text
-START → LLM
-LLM → END
-```
-
-という接続が **Edge** です。
-
-そして、この処理全体が **Graph** です。
-
----
-
-# 4. Graphとは
-
-まず一番大きな概念であるGraphから見てみましょう。
-
-Graphは、
-
-> **処理全体の流れ**
-
-を表します。
+と覚えれば十分です。
 
 例えば、
 
 ```mermaid
 flowchart LR
     START(["START"])
-    LLM["LLM"]
+
+    HELLO["hello"]
+
+    UPPER["upper"]
+
     END(["END"])
 
-    START --> LLM
-    LLM --> END
+    START --> HELLO
+    HELLO --> UPPER
+    UPPER --> END
 ```
 
-というGraphがあるとします。
-
-処理は、
+というGraphなら、
 
 ```text
-START
-  ↓
-LLM
-  ↓
-END
+hello
+upper
 ```
 
-という順番で進みます。
+が **Node**、
 
-プログラムの処理フローを、図として表現したものだと考えると分かりやすいです。
+```text
+hello → upper
+```
+
+という接続が **Edge**、
+
+全体が **Graph** です。
+
+そして、Node間で処理するデータが **State** です。
 
 ---
 
-# 5. Nodeとは
+## 3. Stateは「処理中の共有データ」
 
-Nodeは、
+Stateは、
 
-> **Graphの中で実行される1つの処理**
+> **Graphの処理中に保持するデータ**
 
 です。
 
 例えば、
 
-```mermaid
-flowchart LR
-    START(["START"])
-    A["LLMを呼び出す"]
-    END(["END"])
-
-    START --> A
-    A --> END
+```text
+message = "LangGraph"
 ```
 
-この、
+というStateがあるとします。
+
+最初のNodeで、
 
 ```text
-LLMを呼び出す
+LangGraph
+
+↓
+
+Hello LangGraph
 ```
 
-部分がNodeです。
+へ変更します。
 
-LangGraphでは、Python関数をNodeとして登録できます。
-
-例えば、
-
-```python
-def hello_node(state):
-    print("Hello LangGraph")
-
-    return state
-```
-
-というPython関数があるとします。
-
-この関数を、
+次のNodeで、
 
 ```text
-hello
+Hello LangGraph
+
+↓
+
+HELLO LANGGRAPH
 ```
 
-というNodeとしてGraphへ登録できます。
+へ変更します。
 
 ```mermaid
 flowchart LR
+    S1["State<br>LangGraph"]
+
+    HELLO["hello"]
+
+    S2["State<br>Hello LangGraph"]
+
+    UPPER["upper"]
+
+    S3["State<br>HELLO LANGGRAPH"]
+
+    S1 --> HELLO
+    HELLO --> S2
+    S2 --> UPPER
+    UPPER --> S3
+```
+
+Stateを、
+
+> **処理の途中でNode同士が共有するデータ**
+
+と考えると分かりやすくなります。
+
+---
+
+## 4. 最初のGraphを作る
+
+まずは、できるだけ小さなGraphを作ります。
+
+```mermaid
+flowchart LR
     START(["START"])
-    HELLO["hello Node"]
+
+    HELLO["hello"]
+
     END(["END"])
 
     START --> HELLO
     HELLO --> END
 ```
 
-つまり、
-
-```text
-Python関数
-    ↓
-Node
-```
-
-と考えることができます。
-
----
-
-# 6. Edgeとは
-
-Edgeは、
-
-> **Nodeから次のNodeへ進む道**
-
-です。
-
-例えば、
-
-```mermaid
-flowchart LR
-    A["Node A"] --> B["Node B"]
-```
-
-というGraphでは、
-
-```text
-Node A → Node B
-```
-
-というEdgeがあります。
-
-もう少し具体的にすると、
-
-```mermaid
-flowchart LR
-    START(["START"])
-    INPUT["Input"]
-    LLM["LLM"]
-    END(["END"])
-
-    START --> INPUT
-    INPUT --> LLM
-    LLM --> END
-```
-
-Edgeによって、
-
-```text
-START
-  ↓
-Input
-  ↓
-LLM
-  ↓
-END
-```
-
-という実行順序が決まります。
-
----
-
-# 7. Stateとは
-
-Stateは、
-
-> **Graphの処理中に保持しておくデータ**
-
-です。
-
-例えば、
-
-```text
-User
- │
- │ 「10と20を足してください」
- ▼
-LLM
-```
-
-という処理では、
-
-```text
-「10と20を足してください」
-```
-
-というメッセージをどこかに保持しておく必要があります。
-
-そこでStateを使います。
-
-```text
-State
-
-messages:
-  - "10と20を足してください"
-```
-
-NodeはStateを受け取り、処理します。
-
-```mermaid
-flowchart LR
-    STATE1["State<br>messages"] --> NODE["LLM Node"]
-    NODE --> STATE2["更新されたState"]
-```
-
-つまり、
-
-```text
-State
-  ↓
-Node
-  ↓
-Stateを更新
-```
-
-という流れです。
-
----
-
-# 8. Stateは「共有ノート」と考える
-
-Stateが少し分かりにくい場合は、**処理中にみんなで使う共有ノート**と考えてみましょう。
-
-例えば、
-
-```text
-State
-
-messages:
-  User: 10と20を足してください
-```
-
-というStateがあります。
-
-LLM NodeがこのStateを読みます。
-
-```text
-LLM Node
-
-「ユーザーは10と20を足してほしいのか」
-```
-
-そしてLLMの結果をStateへ追加します。
-
-```text
-State
-
-messages:
-  User: 10と20を足してください
-  AI: add Toolを使う
-```
-
-次のNodeは、このStateを見て処理できます。
-
-```mermaid
-flowchart LR
-    S1["State<br>User Message"]
-
-    LLM["LLM Node"]
-
-    S2["State<br>User Message<br>+ AI Message"]
-
-    TOOL["Tool Node"]
-
-    S3["State<br>User Message<br>+ AI Message<br>+ Tool Result"]
-
-    S1 --> LLM
-    LLM --> S2
-    S2 --> TOOL
-    TOOL --> S3
-```
-
-つまりStateは、
-
-> **NodeからNodeへ情報を引き継ぐためのデータ**
-
-でもあります。
-
----
-
-# 9. 4つの概念を整理する
-
-ここで一度整理しましょう。
-
-```mermaid
-flowchart LR
-    START(["START"])
-
-    A["Node A"]
-
-    B["Node B"]
-
-    END(["END"])
-
-    START --> A
-    A --> B
-    B --> END
-```
-
-このGraphに対して、
-
-| 要素 | 役割 |
-| --- | --- |
-| State | Node間で利用するデータ |
-| Node | 実際の処理 |
-| Edge | 次に進むNodeをつなぐ |
-| Graph | State・Node・Edgeを組み合わせた全体 |
-
-と考えます。
-
-さらにシンプルにすると、
-
-```text
-State = 何を持っている？
-
-Node  = 何をする？
-
-Edge  = 次はどこ？
-
-Graph = 全体はどう流れる？
-```
-
-です。
-
----
-
-# 10. 最初のLangGraphを作る
-
-ここから実際にLangGraphを作ります。
-
-Chapter 7では次の構成を使用します。
+ディレクトリは次のようにします。
 
 ```text
 chapters/
@@ -508,9 +253,7 @@ chapters/
     └── state.py
 ```
 
-最初はAgentやToolを使いません。
-
-まず、
+このGraphでは、
 
 ```text
 START
@@ -520,23 +263,13 @@ hello
 END
 ```
 
-という非常に小さなGraphを作ります。
-
-```mermaid
-flowchart LR
-    START(["START"])
-    HELLO["hello"]
-    END(["END"])
-
-    START --> HELLO
-    HELLO --> END
-```
+という処理だけを実行します。
 
 ---
 
-# 11. Stateを定義する
+## 5. Stateを定義する
 
-`state.py`を作成します。
+まず、`state.py`を作ります。
 
 ```python
 from typing import TypedDict
@@ -552,11 +285,11 @@ class AgentState(TypedDict):
 message
 ```
 
-というデータだけを持ちます。
+だけを持ちます。
 
 ```text
 AgentState
-
+│
 └── message
 ```
 
@@ -568,15 +301,23 @@ AgentState
 }
 ```
 
-というデータを保持できます。
+というデータをGraphへ渡します。
+
+このデータが、Nodeを通りながら更新されていきます。
 
 ---
 
-# 12. Nodeを作る
+## 6. Nodeを作る
 
 次にNodeを作ります。
 
-`graph.py`
+Nodeは、
+
+> **Stateを受け取り、処理を行う関数**
+
+と考えることができます。
+
+今回は、
 
 ```python
 def hello_node(state):
@@ -587,10 +328,12 @@ def hello_node(state):
     }
 ```
 
+というNodeを作ります。
+
 このNodeは、
 
 ```text
-State
+入力
 
 message = "LangGraph"
 ```
@@ -598,32 +341,98 @@ message = "LangGraph"
 を受け取り、
 
 ```text
-State
+出力
 
 message = "Hello LangGraph"
 ```
 
-へ更新します。
+を返します。
 
 ```mermaid
 flowchart LR
-    A["State<br>LangGraph"]
+    INPUT["LangGraph"]
 
-    B["hello Node"]
+    NODE["hello_node"]
 
-    C["State<br>Hello LangGraph"]
+    OUTPUT["Hello LangGraph"]
 
-    A --> B
-    B --> C
+    INPUT --> NODE
+    NODE --> OUTPUT
 ```
+
+つまりNodeでは、
+
+```text
+Stateを読む
+    ↓
+処理する
+    ↓
+Stateを更新する
+```
+
+という処理を行います。
 
 ---
 
-# 13. Graphを作る
+## 7. Graphを作る
 
-次に、StateとNodeを使ってGraphを作ります。
+`graph.py`を作ります。
 
-`graph.py`を次のようにします。
+まず必要なものをimportします。
+
+```python
+from langgraph.graph import StateGraph, START, END
+
+from state import AgentState
+```
+
+Nodeを定義します。
+
+```python
+def hello_node(state):
+    name = state["message"]
+
+    return {
+        "message": f"Hello {name}"
+    }
+```
+
+次にGraphを作ります。
+
+```python
+builder = StateGraph(AgentState)
+```
+
+Nodeを登録します。
+
+```python
+builder.add_node(
+    "hello",
+    hello_node
+)
+```
+
+Edgeを追加します。
+
+```python
+builder.add_edge(
+    START,
+    "hello"
+)
+
+builder.add_edge(
+    "hello",
+    END
+)
+```
+
+最後にGraphを完成させます。
+
+```python
+graph = builder.compile()
+```
+
+`graph.py`全体は次のようになります。
 
 ```python
 from langgraph.graph import StateGraph, START, END
@@ -640,150 +449,47 @@ def hello_node(state):
 
 
 builder = StateGraph(AgentState)
-```
 
-`StateGraph`を使ってGraphを作ります。
 
-```python
-StateGraph(AgentState)
-```
-
-によって、
-
-> **このGraphではAgentStateというStateを利用します**
-
-と定義しています。
-
----
-
-# 14. NodeをGraphへ登録する
-
-作成した`hello_node`をGraphへ登録します。
-
-```python
 builder.add_node(
     "hello",
     hello_node
 )
-```
 
-これによって、
 
-```text
-Python関数
-
-hello_node()
-     │
-     ▼
-Node
-
-hello
-```
-
-となります。
-
-現在のGraphには、
-
-```mermaid
-flowchart LR
-    HELLO["hello"]
-```
-
-というNodeが1つ存在しています。
-
----
-
-# 15. Edgeを追加する
-
-次にEdgeを追加します。
-
-```python
 builder.add_edge(
     START,
     "hello"
 )
-```
 
-さらに、
-
-```python
 builder.add_edge(
     "hello",
     END
 )
+
+
+graph = builder.compile()
 ```
 
-を追加します。
-
-これで、
+コードとGraphを対応させると、
 
 ```mermaid
 flowchart LR
     START(["START"])
+
     HELLO["hello"]
+
     END(["END"])
 
     START --> HELLO
     HELLO --> END
 ```
 
-というGraphになります。
+となります。
 
 ---
 
-# 16. Graphを完成させる
-
-最後にGraphを`compile()`します。
-
-```python
-graph = builder.compile()
-```
-
-全体コードは次のようになります。
-
-```python
-from langgraph.graph import StateGraph, START, END
-
-from state import AgentState
-
-
-def hello_node(state):
-    name = state["message"]
-
-    return {
-        "message": f"Hello {name}"
-    }
-
-
-builder = StateGraph(AgentState)
-
-
-builder.add_node(
-    "hello",
-    hello_node
-)
-
-
-builder.add_edge(
-    START,
-    "hello"
-)
-
-
-builder.add_edge(
-    "hello",
-    END
-)
-
-
-graph = builder.compile()
-```
-
-これでGraphが完成しました。
-
----
-
-# 17. Graphを実行する
+## 8. Graphを実行する
 
 `main.py`からGraphを実行します。
 
@@ -807,65 +513,55 @@ print(result["message"])
 python chapters/chapter07_langgraph/main.py
 ```
 
-実行結果：
+結果は、
 
 ```text
 Hello LangGraph
 ```
 
-処理の流れは次の通りです。
+となります。
 
-```mermaid
-flowchart LR
-    START(["START"])
+内部では、
 
-    STATE1["State<br>LangGraph"]
+```text
+① Stateを作る
 
-    HELLO["hello"]
+message = "LangGraph"
 
-    STATE2["State<br>Hello LangGraph"]
+        ↓
 
-    END(["END"])
+② START
 
-    START --> STATE1
-    STATE1 --> HELLO
-    HELLO --> STATE2
-    STATE2 --> END
+        ↓
+
+③ hello Node
+
+        ↓
+
+④ Stateを更新
+
+message = "Hello LangGraph"
+
+        ↓
+
+⑤ END
 ```
 
-これが最初のLangGraphです。
+という処理が行われています。
 
 ---
 
-# 18. Nodeを2つに増やす
+## 9. Nodeを追加する
 
-次に、Nodeを増やしてみましょう。
+Graphの特徴は、処理をNodeとして追加していけることです。
+
+次に、
 
 ```text
-START
-  ↓
-hello
-  ↓
-upper
-  ↓
-END
+文字を大文字にする
 ```
 
-というGraphを作ります。
-
-```mermaid
-flowchart LR
-    START(["START"])
-    HELLO["hello"]
-    UPPER["upper"]
-    END(["END"])
-
-    START --> HELLO
-    HELLO --> UPPER
-    UPPER --> END
-```
-
-`upper_node`を追加します。
+Nodeを追加します。
 
 ```python
 def upper_node(state):
@@ -885,7 +581,7 @@ builder.add_node(
 )
 ```
 
-Edgeを変更します。
+Edgeも変更します。
 
 ```python
 builder.add_edge(
@@ -904,31 +600,55 @@ builder.add_edge(
 )
 ```
 
-実行すると、
+Graphは、
 
-```text
-LangGraph
-    ↓
-hello
-    ↓
-Hello LangGraph
-    ↓
-upper
-    ↓
-HELLO LANGGRAPH
+```mermaid
+flowchart LR
+    START(["START"])
+
+    HELLO["hello"]
+
+    UPPER["upper"]
+
+    END(["END"])
+
+    START --> HELLO
+    HELLO --> UPPER
+    UPPER --> END
 ```
 
 となります。
 
-ここで、
+Stateは、
 
-> **StateをNodeからNodeへ渡しながら処理している**
+```text
+LangGraph
 
-ことを確認してください。
+↓
+
+Hello LangGraph
+
+↓
+
+HELLO LANGGRAPH
+```
+
+と変化します。
+
+ここまで理解できれば、
+
+```text
+State
+Node
+Edge
+Graph
+```
+
+の基本は理解できています。
 
 ---
 
-# 19. Edgeには条件分岐もある
+## 10. 処理を分岐する
 
 ここまでは、
 
@@ -940,17 +660,17 @@ B
 C
 ```
 
-という一本道でした。
+という固定された処理でした。
 
-しかし、Agentでは条件によって処理を変える必要があります。
-
-例えば、
+しかし実際のAgentでは、
 
 ```text
-Toolが必要？
+Toolが必要ならToolへ
+
+Toolが不要なら終了
 ```
 
-という判断です。
+のような分岐が必要になります。
 
 ```mermaid
 flowchart TD
@@ -966,456 +686,239 @@ flowchart TD
 
     CHECK -->|"YES"| TOOL
     CHECK -->|"NO"| END
+```
+
+LangGraphでは、このような分岐を **Conditional Edge** で表現できます。
+
+通常のEdgeは、
+
+```text
+A
+↓
+B
+```
+
+と次のNodeが決まっています。
+
+Conditional Edgeでは、
+
+```text
+       ┌→ B
+A ─────┤
+       └→ C
+```
+
+のように、条件によって次のNodeを変更できます。
+
+| Edge | 動き |
+| --- | --- |
+| Edge | 次のNodeが固定 |
+| Conditional Edge | 条件によって次のNodeを変更 |
+
+このChapterでは、
+
+> **LangGraphでは処理を分岐できる**
+
+ということだけ覚えておけば十分です。
+
+Conditional Edgeは、Chapter 9のOrchestratorで実際に使用します。
+
+---
+
+## 11. Chapter 6のAgentをGraphとして考える
+
+Chapter 6では、Agentが、
+
+```text
+考える
+   ↓
+Toolを使う
+   ↓
+結果を見る
+   ↓
+もう一度考える
+```
+
+という処理をしていました。
+
+これをGraphとして表すと、
+
+```mermaid
+flowchart TD
+    START(["START"])
+
+    AGENT["Agent<br>LLMで判断"]
+
+    TOOL["Tool<br>処理を実行"]
+
+    END(["END"])
+
+    START --> AGENT
+
+    AGENT -->|"Toolが必要"| TOOL
+
+    TOOL --> AGENT
+
+    AGENT -->|"回答できる"| END
+```
+
+となります。
+
+LangGraphの言葉に置き換えると、
+
+| 要素 | 内容 |
+| --- | --- |
+| State | 会話や処理中のデータ |
+| Agent Node | LLMで次の処理を判断 |
+| Tool Node | Toolを実行 |
+| Edge | Node間を移動 |
+| Conditional Edge | Toolを使うか終了するか判断 |
+
+つまりChapter 6で作ったAgentも、
+
+> **Stateを持ちながらNode間を移動するGraph**
+
+として考えることができます。
+
+---
+
+## 12. LangGraphを使う理由
+
+簡単な処理なら、必ずしもLangGraphは必要ありません。
+
+例えば、
+
+```text
+User
+ ↓
+LLM
+ ↓
+Answer
+```
+
+だけなら、通常のPythonコードでも十分です。
+
+LangGraphが役立つのは、処理が複雑になった場合です。
+
+例えば、
+
+```mermaid
+flowchart TD
+    INPUT["Input"]
+
+    CHECK{"分類"}
+
+    SEARCH["Search"]
+
+    CALC["Calculation"]
+
+    REVIEW["Review"]
+
+    ANSWER["Answer"]
+
+    INPUT --> CHECK
+
+    CHECK --> SEARCH
+    CHECK --> CALC
+
+    SEARCH --> REVIEW
+    CALC --> REVIEW
+
+    REVIEW --> ANSWER
 ```
 
 このように、
 
-> **条件によって次に進むNodeを変更する**
-
-ために利用するのが **Conditional Edge** です。
-
-日本語にすると、
-
 ```text
-条件付きのEdge
+処理が複数ある
+
+分岐がある
+
+ループがある
+
+複数Agentがいる
 ```
 
-です。
+場合、Graphとして表現すると処理全体を理解しやすくなります。
 
----
-
-# 20. 通常のEdgeとConditional Edge
-
-違いを整理しましょう。
-
-## 通常のEdge
-
-必ず同じNodeへ進みます。
-
-```mermaid
-flowchart LR
-    A["Node A"] --> B["Node B"]
-```
-
-```text
-Aの次は必ずB
-```
-
----
-
-## Conditional Edge
-
-条件によって進むNodeが変わります。
-
-```mermaid
-flowchart TD
-    A["Agent"]
-
-    CHECK{"Toolが必要？"}
-
-    B["Tool"]
-
-    C["END"]
-
-    A --> CHECK
-
-    CHECK -->|"YES"| B
-    CHECK -->|"NO"| C
-```
-
-```text
-Toolが必要
-    ↓
-Tool Node
-
-
-Toolが不要
-    ↓
-END
-```
-
-Agentでは、このConditional Edgeが重要になります。
-
----
-
-# 21. Chapter 6のAgentをGraphとして考える
-
-ここでChapter 6へ戻ってみましょう。
-
-Chapter 6のAgentは、
-
-```text
-考える
- ↓
-Toolを使う
- ↓
-結果を見る
- ↓
-もう一度考える
-```
-
-という処理でした。
-
-これをGraphとして表現すると、
-
-```mermaid
-flowchart TD
-    START(["START"])
-
-    AGENT["Agent"]
-
-    CHECK{"Toolが必要？"}
-
-    TOOL["Tool"]
-
-    END(["END"])
-
-    START --> AGENT
-
-    AGENT --> CHECK
-
-    CHECK -->|"YES"| TOOL
-
-    TOOL --> AGENT
-
-    CHECK -->|"NO"| END
-```
-
-となります。
-
-このGraphには、
-
-### State
-
-```text
-messages
-```
-
-### Node
-
-```text
-Agent
-Tool
-```
-
-### Edge
-
-```text
-START → Agent
-
-Tool → Agent
-```
-
-### Conditional Edge
-
-```text
-Agent → Tool
-
-または
-
-Agent → END
-```
-
-があります。
-
-Chapter 6でAgentが内部的に行っていた処理を、Graphとして考えられるようになってきました。
-
----
-
-# 22. Agent用のState
-
-実際のAgentでは、Stateとして会話メッセージを保持することがよくあります。
-
-例えば、
-
-```text
-State
-
-messages
-├── User Message
-├── AI Message
-├── Tool Message
-├── AI Message
-└── ...
-```
-
-です。
-
-Chapter 5で利用した、
-
-```python
-messages
-```
-
-を覚えているでしょうか。
-
-```text
-User Message
-     ↓
-AI Message
-     ↓
-Tool Message
-     ↓
-AI Message
-```
-
-という会話履歴を管理していました。
-
-LangGraphでは、このようなデータをStateとして管理します。
-
-```mermaid
-flowchart LR
-    STATE["State<br>messages"]
-
-    AGENT["Agent Node"]
-
-    TOOL["Tool Node"]
-
-    STATE --> AGENT
-    AGENT --> STATE
-
-    STATE --> TOOL
-    TOOL --> STATE
-```
-
-NodeがStateを読み、
-
-```text
-処理
-```
-
-を行い、
-
-```text
-Stateを更新
-```
-
-します。
-
----
-
-# 23. LangGraphでAgentを考える
-
-最終的な構成を整理します。
-
-```mermaid
-flowchart TD
-    START(["START"])
-
-    AGENT["Agent Node<br>LLMで判断"]
-
-    TOOL["Tool Node<br>Toolを実行"]
-
-    END(["END"])
-
-    START --> AGENT
-
-    AGENT -->|"Tool Callあり"| TOOL
-
-    TOOL -->|"Tool Result"| AGENT
-
-    AGENT -->|"Tool Callなし"| END
-```
-
-処理の流れは、
-
-```text
-START
-  ↓
-Agent Node
-  ↓
-Toolが必要？
-  │
-  ├── YES
-  │     ↓
-  │   Tool Node
-  │     ↓
-  │   Agent Nodeへ戻る
-  │
-  └── NO
-        ↓
-       END
-```
-
-です。
-
-Chapter 6で学んだAgentのループが、そのままGraphになっています。
-
----
-
-# 24. LangGraphを使う理由
-
-ここで、
-
-> AgentはChapter 6ですでに作れたのに、なぜLangGraphを学ぶのか？
-
-という疑問が出てくるかもしれません。
-
-シンプルなAgentなら、Chapter 6の方法でも十分です。
-
-しかし、処理が複雑になると、
-
-```text
-入力
- ↓
-分類
- ↓
-Agent A
- ↓
-条件分岐
- ├── Tool A
- ├── Tool B
- └── Agent B
- ↓
-レビュー
- ↓
-回答
-```
-
-のような処理が必要になる場合があります。
-
-このような処理では、
-
-```text
-どんなデータを持っている？
-
-今どの処理？
-
-次はどこへ進む？
-
-どの条件で分岐する？
-```
-
-を明確にすることが重要です。
-
-LangGraphでは、
-
-```text
-State
-Node
-Edge
-Graph
-```
-
-として、それらを整理できます。
-
----
-
-# 25. コードを書く前にGraphを描く
-
-LangGraphを使うときは、いきなりコードを書くのではなく、最初にGraphを描くと理解しやすくなります。
-
-例えばAgentを作りたいなら、
-
-```mermaid
-flowchart TD
-    START(["START"])
-    AGENT["Agent"]
-    TOOL["Tool"]
-    END(["END"])
-
-    START --> AGENT
-    AGENT -->|"Toolが必要"| TOOL
-    TOOL --> AGENT
-    AGENT -->|"回答できる"| END
-```
-
-と描きます。
-
-次に、
-
-```text
-Stateは何？
-
-Nodeは何？
-
-Edgeは何？
-```
-
-を考えます。
-
-今回なら、
-
-| 項目 | 内容 |
-| --- | --- |
-| State | `messages` |
-| Node | `agent`, `tool` |
-| Edge | `START → agent`, `tool → agent` |
-| Conditional Edge | `agent → tool / END` |
-
-となります。
-
-そして最後にコードへ落とします。
+そのため、LangGraphを使うときは、いきなりコードを書くのではなく、
 
 ```text
 ① Graphを描く
+
       ↓
+
 ② Stateを決める
+
       ↓
+
 ③ Nodeを決める
+
       ↓
+
 ④ Edgeを決める
+
       ↓
+
 ⑤ コードを書く
 ```
 
-この順番で考えると、複雑なAgentでも整理しやすくなります。
+という順番で考えると整理しやすくなります。
 
 ---
 
-# 26. 演習
+## 13. 演習
 
-## 演習1：Nodeを追加する
+### 演習1：Nodeを追加する
 
-現在のGraph、
+次のGraphを作ってください。
 
-```text
-START
-  ↓
-hello
-  ↓
-upper
-  ↓
-END
+```mermaid
+flowchart LR
+    START(["START"])
+
+    HELLO["hello"]
+
+    UPPER["upper"]
+
+    EX["add_exclamation"]
+
+    END(["END"])
+
+    START --> HELLO
+    HELLO --> UPPER
+    UPPER --> EX
+    EX --> END
 ```
-
-に、新しいNodeを追加してください。
-
-例えば、
-
-```text
-START
-  ↓
-hello
-  ↓
-upper
-  ↓
-add_exclamation
-  ↓
-END
-```
-
-とします。
 
 `add_exclamation`では、
 
 ```text
 HELLO LANGGRAPH
-```
 
-を、
+↓
 
-```text
 HELLO LANGGRAPH!
 ```
 
-へ変更してください。
+となるようにしてください。
+
+例えば、
+
+```python
+def add_exclamation_node(state):
+    return {
+        "message": state["message"] + "!"
+    }
+```
+
+と実装できます。
 
 ---
 
-## 演習2：Graphを図にする
+### 演習2：Graphを先に描く
 
-次の処理をMermaidでGraphとして表現してください。
+次の処理をMermaidで表現してください。
 
 ```text
 START
@@ -1429,24 +932,23 @@ Answer
 END
 ```
 
-ヒント：
+コードを書く前に、
 
-```mermaid
-flowchart LR
-    START(["START"])
-    INPUT["Input"]
-    LLM["LLM"]
-    ANSWER["Answer"]
-    END(["END"])
+```text
+Stateは何か？
+
+Nodeは何か？
+
+Edgeはどこか？
 ```
 
-Edgeを追加して完成させてください。
+を考えてみましょう。
 
 ---
 
-## 演習3：AgentのGraphを説明する
+### 演習3：Agent Graphを説明する
 
-次のGraphを見て、それぞれの役割を説明してください。
+次のGraphについて、
 
 ```mermaid
 flowchart TD
@@ -1467,212 +969,145 @@ flowchart TD
     AGENT -->|"回答できる"| END
 ```
 
-次の4つを考えてみましょう。
+以下を説明してみてください。
 
 ```text
-Stateは何？
+Stateとは何か？
 
-Nodeは何？
+Nodeはどれか？
 
-Edgeは何？
+Edgeはどれか？
 
-Conditional Edgeはどこ？
+Conditional Edgeはどこか？
 ```
+
+説明できれば、LangGraphの基本概念を理解できています。
 
 ---
 
-# 27. このChapterで覚えること
+## 14. まとめ
 
-LangGraphには多くの機能があります。
+このChapterでは、**LangGraph** の基本を学びました。
 
-しかし、このChapterですべて覚える必要はありません。
+LangGraphでは、処理をGraphとして考えます。
 
-まずは4つです。
+```mermaid
+flowchart LR
+    START(["START"])
 
-| 用語 | 一言でいうと |
+    A["Node A"]
+
+    B["Node B"]
+
+    END(["END"])
+
+    START --> A
+    A --> B
+    B --> END
+```
+
+最も重要なのは、次の4つです。
+
+| 用語 | 覚え方 |
 | --- | --- |
 | State | データ |
 | Node | 処理 |
 | Edge | 道 |
 | Graph | 全体 |
 
-そしてAgentでは、
+NodeはStateを使って処理します。
 
 ```text
-State
-  ↓
-Node
-  ↓
-State更新
-  ↓
-次のNode
+Stateを読む
+    ↓
+Nodeで処理
+    ↓
+Stateを更新
 ```
 
-という処理を繰り返します。
+Edgeによって次のNodeへ進みます。
+
+```text
+Node A
+  ↓
+Node B
+  ↓
+Node C
+```
+
+さらにConditional Edgeを使えば、
+
+```text
+       ┌→ Node B
+Node A ┤
+       └→ Node C
+```
+
+のような分岐も作れます。
+
+LangGraphを使うときは、
+
+```text
+Graph
+ ↓
+State
+ ↓
+Node
+ ↓
+Edge
+ ↓
+Code
+```
+
+の順番で設計すると整理しやすくなります。
 
 ---
 
-# 28. ここまでの学習を整理する
+# 次のChapter
 
-Chapter 3からの流れを整理します。
+**Chapter 8: Multi Agent構成を作る**
+
+Chapter 7では、
+
+```text
+1つのGraphの中に
+複数のNodeを配置する
+```
+
+ことを学びました。
+
+次のChapterでは、Nodeとして扱う処理をさらに役割ごとのAgentへ分けます。
 
 ```mermaid
 flowchart LR
-    C3["Chapter 3<br>LLM"]
-
-    C4["Chapter 4<br>Tool"]
-
-    C5["Chapter 5<br>Tool Calling"]
-
-    C6["Chapter 6<br>Agent"]
-
-    C7["Chapter 7<br>LangGraph"]
-
-    C3 --> C4
-    C4 --> C5
-    C5 --> C6
-    C6 --> C7
-```
-
-それぞれ一言で表すと、
-
-| Chapter | 学んだこと |
-| --- | --- |
-| Chapter 3 | LLMを呼ぶ |
-| Chapter 4 | Toolを作る |
-| Chapter 5 | LLMにToolを選ばせる |
-| Chapter 6 | 判断と実行を繰り返す |
-| Chapter 7 | 処理の流れをGraphとして表現する |
-
----
-
-# 29. まとめ
-
-このChapterでは、LangGraphの基本概念を学びました。
-
-LangGraphを理解するために、まず覚えるのは次の4つです。
-
-```text
-State = データ
-
-Node  = 処理
-
-Edge  = 道
-
-Graph = 全体
-```
-
-例えばAgentなら、
-
-```mermaid
-flowchart TD
     START(["START"])
 
-    AGENT["Agent Node"]
+    R["Research Agent"]
 
-    TOOL["Tool Node"]
+    C["Calculation Agent"]
+
+    A["Answer Agent"]
 
     END(["END"])
 
-    START --> AGENT
-
-    AGENT -->|"Toolが必要"| TOOL
-
-    TOOL --> AGENT
-
-    AGENT -->|"回答できる"| END
+    START --> R
+    R --> C
+    C --> A
+    A --> END
 ```
 
-というGraphとして考えることができます。
-
-Agentの内部で行われていた、
+つまり、
 
 ```text
-判断
- ↓
-Tool実行
- ↓
-結果確認
- ↓
-再判断
+Single Agent
+
+      ↓
+
+LangGraph
+
+      ↓
+
+Multi Agent
 ```
 
-という処理が、
-
-```text
-Node
-+
-Edge
-+
-State
-```
-
-によって明示的に表現できるようになりました。
-
-> **LangGraphとは、Agentの処理をState・Node・Edgeを使ってGraphとして組み立てるための仕組み**
-
-まずはこの理解ができていれば十分です。
-
----
-
-## 次のChapter
-
-**Chapter 8：Multi Agentを作る**
-
-ここまでは、1つのAgentが複数のToolを利用していました。
-
-```text
-User
- │
- ▼
-Agent
- │
- ├── Tool A
- ├── Tool B
- └── Tool C
- │
- ▼
-Answer
-```
-
-しかし、システムが大きくなると、
-
-```text
-調査するAgent
-
-計算するAgent
-
-回答を作るAgent
-```
-
-のように、役割ごとにAgentを分けた方が管理しやすくなる場合があります。
-
-次のChapterでは、
-
-```mermaid
-flowchart TD
-    USER["User"]
-
-    RESEARCH["Research Agent"]
-
-    CALC["Calculation Agent"]
-
-    ANSWER["Answer Agent"]
-
-    USER --> RESEARCH
-    RESEARCH --> CALC
-    CALC --> ANSWER
-```
-
-のように、複数のAgentを組み合わせる **Multi Agent** の考え方を学びます。
-
-Chapter 7で学んだ、
-
-```text
-State
-Node
-Edge
-Graph
-```
-
-が、複数Agentを組み合わせるための土台になります。
+へ発展させていきます。
