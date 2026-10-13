@@ -1,6 +1,13 @@
-def main():
-    print("Chapter 7: LangGraph example")
+from graph import graph
 
 
-if __name__ == "__main__":
-    main()
+# Graphを実行する
+result = graph.invoke(
+    {
+        "message": "LangGraph"
+    }
+)
+
+
+# 最終的なStateを表示する
+print(result["message"])

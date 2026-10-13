@@ -1,1 +1,5 @@
-"""Chapter 7 state definition will be added here."""
+from typing import TypedDict
+
+
+class AgentState(TypedDict):
+    message: str
