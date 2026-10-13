@@ -11,7 +11,7 @@ load_dotenv()
 
 # LLMを作成する
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
