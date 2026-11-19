@@ -967,36 +967,24 @@ response = llm_with_tools.invoke(messages)
 messages.append(response)
 
 
-# Tool Callを取得
-tool_call = response.tool_calls[0]
+# Tool Callが存在する場合だけ実行する
+if response.tool_calls:
+    # 複数のTool Callにも対応する
+    for tool_call in response.tool_calls:
+        selected_tool = tools_by_name[tool_call["name"]]
+        tool_result = selected_tool.invoke(tool_call["args"])
+        messages.append(
+            ToolMessage(
+                content=str(tool_result),
+                tool_call_id=tool_call["id"]
+            )
+        )
 
-
-# LLMが選んだToolを取得
-selected_tool = tools_by_name[
-    tool_call["name"]
-]
-
-
-# Toolを実行
-tool_result = selected_tool.invoke(
-    tool_call["args"]
-)
-
-
-# Tool Resultを会話履歴へ追加
-messages.append(
-    ToolMessage(
-        content=str(tool_result),
-        tool_call_id=tool_call["id"]
-    )
-)
-
-
-# Tool Resultを使って最終回答を生成
-final_response = llm_with_tools.invoke(messages)
-
-
-print(final_response.content)
+    final_response = llm_with_tools.invoke(messages)
+    print(final_response.content)
+else:
+    # Toolが不要なら最初の回答を表示する
+    print(response.content)
 ```
 
 ---
