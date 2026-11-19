@@ -157,14 +157,14 @@ APIキーが外部に漏れると、第三者にAPIを利用される危険が�
 プロジェクトのルートディレクトリに.envを作成します。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── .env
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
 ├── docs/
-└── chapters/
+└── examples/
 ```
 
 .envにAPIキーを設定します。
@@ -277,7 +277,7 @@ pip install -r requirements.txt
 今回使用するプログラムは、次の場所に作成します。
 
 ```text
-chapters/
+examples/
 └── chapter03_llm/
     ├── README.md
     └── main.py
@@ -286,7 +286,7 @@ chapters/
 Terminalから移動します。
 
 ```text
-cd chapters/chapter03_llm
+cd examples/chapter03_llm
 ```
 
 現在のディレクトリを確認します。
@@ -526,7 +526,7 @@ Terminal
 今回のコードで重要なのは、次の3行です。
 
 ```python
-llm = ChatOpenAI(model="gpt-4.1-mini")
+llm = ChatOpenAI(model="gpt-5.5")
 response = llm.invoke("AI Agentとは何ですか？")
 print(response.content)
 ```
@@ -707,10 +707,10 @@ OPENAI_API_KEY=...
 今回の構成では、
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 ├── .env
 │
-└── chapters/
+└── examples/
     └── chapter03_llm/
         └── main.py
 ```
@@ -720,7 +720,7 @@ python-ai-agent-tutorial/
 まずは教材リポジトリのルートディレクトリから、
 
 ```bash
-python chapters/chapter03_llm/main.py
+python examples/chapter03_llm/main.py
 ```
 
 として実行してみてください。  
@@ -755,7 +755,7 @@ APIキーなどの秘密情報は、GitHubへPushしないように注意して�
 今回作成したものを整理します。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── .env
 ├── .env.example
@@ -764,7 +764,7 @@ python-ai-agent-tutorial/
 ├── docs/
 │   └── 03_llm.md
 │
-└── chapters/
+└── examples/
     └── chapter03_llm/
         ├── README.md
         └── main.py
