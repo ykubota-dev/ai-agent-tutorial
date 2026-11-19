@@ -46,3 +46,13 @@ cp .env.example .env
 ```
 
 Windowsでは仮想環境の有効化に `.venv\\Scripts\\activate` を使用してください。APIキーなどの値は `.env` に設定し、このファイルを共有・コミットしないでください。
+
+## サンプルコードのテスト
+
+リポジトリのルートで、次のコマンドを実行します。
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Chapter 3〜9のPython構文、Chapter 4のTool定義重複、Chapter 5の分岐・繰り返し構造、教材内の参照パスとモデル名を検証します。依存ライブラリがインストールされている場合、API通信を行わないChapter 7・8のサンプルも実行します。Chapter 3・5・6・9のLLM APIを使う実行テストは含まれません（APIキーと課金が必要なため）。
