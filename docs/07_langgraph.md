@@ -245,7 +245,7 @@ flowchart LR
 ディレクトリは次のようにします。
 
 ```text
-chapters/
+examples/
 └── chapter07_langgraph/
     ├── README.md
     ├── main.py
@@ -510,7 +510,7 @@ print(result["message"])
 実行します。
 
 ```bash
-python chapters/chapter07_langgraph/main.py
+python examples/chapter07_langgraph/main.py
 ```
 
 結果は、

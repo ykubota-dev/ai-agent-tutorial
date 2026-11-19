@@ -235,7 +235,7 @@ Project B
 教材リポジトリのルートディレクトリへ移動します。
 例えばリポジトリ名が、
 
-> python-ai-agent-tutorial
+> ai-agent-tutorial
 
 の場合、このディレクトリで作業します。
 現在いるディレクトリは、次のコマンドで確認できます。
@@ -254,11 +254,11 @@ Project B
 成功すると、プロジェクト内に.venvディレクトリが作成されます。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── .venv/
 ├── docs/
-├── chapters/
+├── examples/
 ├── README.md
 └── requirements.txt
 ```
@@ -321,7 +321,7 @@ PowerShellの場合は、次のコマンドを実行します。
 と表示されます。
 例えば、
 
-> (.venv) user@machine:~/python-ai-agent-tutorial$
+> (.venv) user@machine:~/ai-agent-tutorial$
 
 のようになります。
 
@@ -517,11 +517,11 @@ VS Code / GitHub Codespaces
 プロジェクト側は次のような状態になっています。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── .venv/
 ├── docs/
-├── chapters/
+├── examples/
 ├── .gitignore
 ├── .env.example
 ├── README.md

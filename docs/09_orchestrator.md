@@ -295,7 +295,7 @@ flowchart TD
 今回のディレクトリ構成は次のようにします。
 
 ```text
-chapters/
+examples/
 └── chapter09_orchestrator/
     ├── README.md
     ├── main.py
@@ -433,7 +433,7 @@ from langchain_openai import ChatOpenAI
 
 
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
@@ -545,7 +545,7 @@ from tools.search import search
 
 
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
@@ -634,7 +634,7 @@ from tools.calculator import add, multiply
 
 
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
@@ -711,7 +711,7 @@ from langchain_openai import ChatOpenAI
 
 
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
@@ -982,7 +982,7 @@ print(result["final_answer"])
 実行します。
 
 ```bash
-python chapters/chapter09_orchestrator/main.py
+python examples/chapter09_orchestrator/main.py
 ```
 
 今回の依頼には、
