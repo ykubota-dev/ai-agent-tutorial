@@ -50,40 +50,25 @@ messages.append(response)
 # Tool Callingが行われた場合
 if response.tool_calls:
 
-    # LLMが選んだTool Callを取得する
-    tool_call = response.tool_calls[0]
+    # 複数のTool Callがある場合もすべて実行する
+    for tool_call in response.tool_calls:
+        print("Tool Call:")
+        print(tool_call)
 
-    print("Tool Call:")
-    print(tool_call)
+        selected_tool = tools_by_name[tool_call["name"]]
+        tool_result = selected_tool.invoke(tool_call["args"])
 
+        print("\nTool Result:")
+        print(tool_result)
 
-    # LLMが選んだToolを取得する
-    selected_tool = tools_by_name[
-        tool_call["name"]
-    ]
-
-
-    # Toolを実行する
-    tool_result = selected_tool.invoke(
-        tool_call["args"]
-    )
-
-    print("\nTool Result:")
-    print(tool_result)
-
-
-    # Toolの実行結果を会話履歴へ追加する
-    messages.append(
-        ToolMessage(
-            content=str(tool_result),
-            tool_call_id=tool_call["id"]
+        messages.append(
+            ToolMessage(
+                content=str(tool_result),
+                tool_call_id=tool_call["id"]
+            )
         )
-    )
 
-
-    # Tool Resultを使ってLLMに最終回答を作らせる
     final_response = llm_with_tools.invoke(messages)
-
     print("\nFinal Answer:")
     print(final_response.content)
 
