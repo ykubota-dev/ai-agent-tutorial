@@ -183,7 +183,7 @@ Tool
 Chapter 4では、次のファイルを使用します。
 
 ```text
-chapters/
+examples/
 └── chapter04_tool/
     ├── README.md
     └── main.py
@@ -204,7 +204,7 @@ print(result)
 リポジトリのルートディレクトリから実行します。
 
 ```bash
-python chapters/chapter04_tool/main.py
+python examples/chapter04_tool/main.py
 ```
 
 実行結果：
@@ -451,7 +451,7 @@ print(add.args)
 実行します。
 
 ```bash
-python chapters/chapter04_tool/main.py
+python examples/chapter04_tool/main.py
 ```
 
 ここでは、Toolが持っている次の情報を確認できます。
@@ -512,7 +512,7 @@ print(result)
 実行します。
 
 ```bash
-python chapters/chapter04_tool/main.py
+python examples/chapter04_tool/main.py
 ```
 
 実行結果：
@@ -980,12 +980,12 @@ add.invoke(
 今回作成した構成は次の通りです。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── docs/
 │   └── 04_tool.md
 │
-└── chapters/
+└── examples/
     └── chapter04_tool/
         ├── README.md
         └── main.py
