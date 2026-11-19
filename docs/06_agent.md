@@ -322,7 +322,7 @@ Agentは、最終的な回答ができるまでこのループを進めます。
 Chapter 6では次のディレクトリを使用します。
 
 ```text
-chapters/
+examples/
 └── chapter06_agent/
     ├── README.md
     ├── main.py
@@ -374,7 +374,7 @@ LLMを準備します。
 
 ```python
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 ```
 
@@ -937,12 +937,12 @@ flowchart LR
 今回作成した構成は次の通りです。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── docs/
 │   └── 06_agent.md
 │
-└── chapters/
+└── examples/
     └── chapter06_agent/
         ├── README.md
         ├── main.py
@@ -963,7 +963,7 @@ load_dotenv()
 
 
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
