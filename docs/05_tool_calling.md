@@ -250,7 +250,7 @@ LLM
 Chapter 5では、次の構成を使用します。
 
 ```text
-chapters/
+examples/
 └── chapter05_tool_calling/
     ├── README.md
     ├── main.py
@@ -301,7 +301,7 @@ load_dotenv()
 
 
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 ```
 
@@ -411,7 +411,7 @@ print(response.tool_calls)
 実行します。
 
 ```bash
-python chapters/chapter05_tool_calling/main.py
+python examples/chapter05_tool_calling/main.py
 ```
 
 Tool Callには、概念的には次のような情報が含まれます。
@@ -931,7 +931,7 @@ load_dotenv()
 
 # LLMを作成
 llm = ChatOpenAI(
-    model="gpt-4.1-mini"
+    model="gpt-5.5"
 )
 
 
@@ -1366,12 +1366,12 @@ Final Answer
 今回作成した構成は次の通りです。
 
 ```text
-python-ai-agent-tutorial/
+ai-agent-tutorial/
 │
 ├── docs/
 │   └── 05_tool_calling.md
 │
-└── chapters/
+└── examples/
     └── chapter05_tool_calling/
         ├── README.md
         ├── main.py
