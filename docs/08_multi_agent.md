@@ -293,7 +293,7 @@ Stateを、**Agent間で共有するデータ**と考えると分かりやすく
 Chapter 8では、次のディレクトリ構成を使用します。
 
 ```text
-chapters/
+examples/
 └── chapter08_multi_agent/
     ├── README.md
     ├── main.py
@@ -727,7 +727,7 @@ print(result["final_answer"])
 実行します。
 
 ```bash
-python chapters/chapter08_multi_agent/main.py
+python examples/chapter08_multi_agent/main.py
 ```
 
 例えば、
