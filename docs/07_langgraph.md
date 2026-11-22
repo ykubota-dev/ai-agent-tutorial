@@ -275,7 +275,7 @@ END
 from typing import TypedDict
 
 
-class AgentState(TypedDict):
+class GraphState(TypedDict):
     message: str
 ```
 
@@ -288,7 +288,7 @@ message
 だけを持ちます。
 
 ```text
-AgentState
+GraphState
 │
 └── message
 ```
@@ -383,7 +383,7 @@ Stateを更新する
 ```python
 from langgraph.graph import StateGraph, START, END
 
-from state import AgentState
+from state import GraphState
 ```
 
 Nodeを定義します。
@@ -400,7 +400,7 @@ def hello_node(state):
 次にGraphを作ります。
 
 ```python
-builder = StateGraph(AgentState)
+builder = StateGraph(GraphState)
 ```
 
 Nodeを登録します。
@@ -437,7 +437,7 @@ graph = builder.compile()
 ```python
 from langgraph.graph import StateGraph, START, END
 
-from state import AgentState
+from state import GraphState
 
 
 def hello_node(state):
@@ -448,7 +448,7 @@ def hello_node(state):
     }
 
 
-builder = StateGraph(AgentState)
+builder = StateGraph(GraphState)
 
 
 builder.add_node(
