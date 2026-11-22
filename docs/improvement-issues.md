@@ -18,8 +18,8 @@
 | ID | 優先度 | 観点 | 課題 | 対応案 | ステータス |
 | --- | --- | --- | --- | --- | --- |
 | I01 | 高 | Chapter間の接続 | 各Chapterで新しい概念を学ぶ理由をさらに明確にできる | 各Chapter冒頭で「前Chapterの限界 → 今Chapterでの解決」を説明する | 未着手 |
-| I02 | 高 | Chapter 8のAgent表現 | Research Agent等は実装上は通常のPython Nodeであり、LLM Agentと混同する可能性がある | 「Agentの役割をNodeとしてモデル化している」と本文で明記する | 未着手 |
-| I03 | 高 | Chapter 9のループ安全性 | LLM Orchestratorが完了済みAgentを再選択し、ループする可能性がある | 完了済み処理を再選択しないガードとrecursion limit等を説明する | 未着手 |
+| I02 | 高 | Chapter 8のAgent表現 | Research Agent等は実装上は通常のPython Nodeであり、LLM Agentと混同する可能性がある | 「Agentの役割をNodeとしてモデル化している」と本文で明記する | 完了 |
+| I03 | 高 | Chapter 9のループ安全性 | LLM Orchestratorが完了済みAgentを再選択し、ループする可能性がある | 完了済み処理を再選択しないガードとrecursion limit等を説明する | 完了 |
 | I04 | 高 | 演習設計 | 演習の達成条件が分かりにくい | 各演習に期待結果または確認ポイントを追加する | 未着手 |
 | I05 | 高 | 自動テスト | LLM APIを使うChapter 3・5・6・9は実行テストされていない | モックLLMを利用し、API通信・課金なしで主要フローをテストする | 未着手 |
 | I06 | 中 | コード差分 | Chapterが進んだ際に何が新しく追加されたか追いにくい箇所がある | 前Chapterから追加・変更されたコードを明示する | 未着手 |
