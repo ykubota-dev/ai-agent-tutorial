@@ -8,9 +8,22 @@ from agents.calculation import calculation_agent
 from agents.answer import answer_agent
 
 
-# Orchestratorが決めたrouteを返す
+# 完了済みの処理が再選択されていないか確認する
 def route_next(state):
-    return state["route"]
+    route = state["route"]
+
+    completed_routes = {
+        "research": bool(state["research_result"]),
+        "calculation": bool(state["calculation_result"]),
+        "answer": bool(state["final_answer"]),
+    }
+
+    if route in completed_routes and completed_routes[route]:
+        raise ValueError(
+            f"完了済みの処理が再選択されました: {route}"
+        )
+
+    return route
 
 
 # Graphを作成する
