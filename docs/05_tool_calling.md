@@ -263,6 +263,44 @@ LLM
 
 ---
 
+## Chapter 4から何が増えるのか
+
+Chapter 4までのコードをすべて覚え直す必要はありません。このChapterで新しく追加する中心部分は次の3つです。
+
+```python
+# 1. LLMへToolを登録する
+llm_with_tools = llm.bind_tools(tools)
+
+# 2. LLMが返したTool Callを確認する
+if response.tool_calls:
+    ...
+
+# 3. Toolの結果をLLMへ返す
+messages.append(
+    ToolMessage(...)
+)
+```
+
+```text
+Chapter 4まで
+Toolを定義・直接実行
+        ↓
+Chapter 5で追加
+LLMへToolを登録
+Tool Callを受け取る
+Tool結果をLLMへ返す
+```
+
+この差分を意識してから、完成コードを組み立てていきます。
+
+### LLMの結果は毎回完全には同じにならない
+
+LLMの文章やTool選択は**非決定的**です。同じコード・同じ入力でも、回答表現やTool Callの形が教材例と完全一致しないことがあります。
+
+教材例との文字列の一致ではなく、**必要なToolが選ばれ、必要な処理を完了できているか**を確認してください。Toolが不要な質問では、LLMがToolを使わず直接回答することも正常です。
+
+---
+
 ## 4. Chapter 5で使用するToolを準備する
 
 Chapter 5では、次の構成を使用します。

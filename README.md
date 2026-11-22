@@ -24,6 +24,27 @@ Python初心者〜初級者を対象としています。
 
 学習は **LLM → Tool → Tool Calling → Agent → LangGraph → Multi Agent → Orchestrator** の順に進めます。ライブラリ固有APIの暗記ではなく、各段階で必要になる基本概念を理解することを重視します。
 
+## 用語表
+
+この教材では、次の用語を以下の意味で統一して使います。
+
+| 用語 | この教材での意味 |
+| --- | --- |
+| LLM | 入力を受け取り、文章生成やTool選択などの判断を行うモデル |
+| Tool | 計算・検索・API呼び出しなど、プログラムとして実行する機能 |
+| Tool Calling | LLMが利用するToolと引数を選ぶ仕組み |
+| Agent | LLMがTool等を利用しながら、目的達成まで判断と実行を進める仕組み |
+| Single Agent | 1つのAgentが処理を担当する構成。本教材では「単一Agent」と表記 |
+| Multi Agent | 複数のAgentまたはAgent役に責務を分けて協調する構成 |
+| Orchestrator | 次にどのAgentへ仕事を任せるかを判断し、全体の処理を制御する役割 |
+| State | LangGraph上でNode間に共有する処理中のデータ |
+| Node | LangGraph上の1つの処理単位 |
+| Edge | Nodeから次のNodeへ進む経路 |
+
+「AI Agent」は教材全体を指す一般的な表現として使い、実装上の構成要素を説明するときは原則として「Agent」と表記します。
+
+---
+
 ## 最終的に作成するAI Agent
 
 ```mermaid

@@ -246,6 +246,23 @@ Research Agentなどの名前は役割を表していますが、この時点で
 
 ---
 
+### Chapter 7から何が増えるのか
+
+Chapter 7ですでにState・Node・Edge・Graphは学びました。Chapter 8で新しいのは、Nodeを**役割ごとに分けて連携させる**という設計です。
+
+```text
+Chapter 7
+複数の処理をNodeとして接続
+        ↓
+Chapter 8
+Research / Calculation / Answer
+という役割ごとのNodeへ責務を分割
+```
+
+Graphの書き方そのものより、**誰が何を担当し、どのStateを受け渡すか**に注目してください。
+
+---
+
 ## 4. Agent間で情報を共有する
 
 Multi Agentでは、Agent同士で情報を引き継ぐ必要があります。

@@ -229,6 +229,36 @@ Orchestrator
 
 ---
 
+### Chapter 8から何が増えるのか
+
+Chapter 8のMulti Agentは実行順序が固定でした。Chapter 9で新しく追加する中心部分は、OrchestratorとConditional Edgeによる**動的な振り分け**です。
+
+```python
+# Orchestratorがrouteを決める
+return {"route": decision.route}
+
+# routeに応じて次のNodeを変える
+builder.add_conditional_edges(...)
+```
+
+```text
+Chapter 8
+Research → Calculation → Answer
+        ↓
+Chapter 9
+Orchestrator → 必要なAgentだけを選択
+```
+
+既存のAgent処理を全部作り直すのではなく、**誰を次に実行するかという制御層を追加する**のが今回の差分です。
+
+### Orchestratorの判断も非決定的
+
+OrchestratorのrouteはLLMが判断するため、同じ依頼でも常に同じ経路になるとは限りません。教材の実行例とrouteが完全一致しなくても、必要な処理を完了して正しい最終回答へ到達できれば正常な場合があります。
+
+一方で、完了済み処理の再選択や無限ループのような**許容できない挙動はコード側で制御します**。LLMの非決定性を許容することと、システムの安全性をLLM任せにすることは別です。
+
+---
+
 ## 4. Orchestratorの処理フロー
 
 Orchestratorは、次の4つから処理を選択します。

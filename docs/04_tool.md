@@ -32,6 +32,29 @@ Toolとして実行可能な機能を定義する
 
 ---
 
+## Chapter 3から何が増えるのか
+
+Chapter 3ではLLMを呼び出しました。Chapter 4で新しく追加するのは、LLMの外側で確実な処理を実行する**Tool**です。
+
+```python
+@tool
+def add(a: int, b: int) -> int:
+    """2つの整数を足し算します。"""
+    return a + b
+```
+
+```text
+Chapter 3
+LLMへ質問する
+        ↓
+Chapter 4で追加
+Python関数をToolとして定義する
+```
+
+このChapterでは、まずToolそのものに集中します。LLMとToolを接続するのはChapter 5です。
+
+---
+
 ## 1. 前のChapterのおさらい
 
 Chapter 3では、PythonからLLMを呼び出しました。
@@ -444,6 +467,38 @@ add Tool
 という仕様になります。
 
 AI AgentからToolを利用するときは、**Toolがどのような入力を受け取るのか**を明確にすることが重要です。
+
+---
+
+### Toolの情報はLLMの判断材料になる
+
+Chapter 4ではまだ人間がToolを選びますが、Chapter 5ではLLMがToolを選びます。そのときLLMは、主に**Tool名・description・引数名と型**を見て「何に使えるToolか」を判断します。
+
+例えば、次のような曖昧な定義より、
+
+```python
+@tool
+def calc(x: int, y: int) -> int:
+    """計算します。"""
+    return x + y
+```
+
+次のように役割が分かる定義の方が、LLMに用途を伝えやすくなります。
+
+```python
+@tool
+def add(a: int, b: int) -> int:
+    """2つの整数を足し算します。"""
+    return a + b
+```
+
+```text
+Tool名       → 何をする機能か
+説明         → いつ使う機能か
+引数名・型   → 何を渡せばよいか
+```
+
+Toolは「動けばよいPython関数」ではなく、**LLMから見ても用途と入力が分かるインターフェースとして設計する**ことが重要です。
 
 ---
 
