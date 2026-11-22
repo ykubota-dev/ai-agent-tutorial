@@ -271,6 +271,21 @@ class GraphState(TypedDict):
 
 ---
 
+### Chapter 6から何が増えるのか
+
+Chapter 6ではAgent内部の実行制御に任せていた処理フローを、このChapterではGraphとして明示します。新しく意識する中心要素は次の4つです。
+
+```text
+State = データ
+Node  = 処理
+Edge  = 道
+Graph = 全体
+```
+
+つまり新しい点は「LLMやToolを増やすこと」ではなく、**処理の流れを構造として定義すること**です。
+
+---
+
 ## 4. 最初のGraphを作る
 
 まずは、できるだけ小さなGraphを作ります。
