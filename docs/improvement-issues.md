@@ -21,7 +21,7 @@
 | I02 | 高 | Chapter 8のAgent表現 | Research Agent等は実装上は通常のPython Nodeであり、LLM Agentと混同する可能性がある | 「Agentの役割をNodeとしてモデル化している」と本文で明記する | 完了 |
 | I03 | 高 | Chapter 9のループ安全性 | LLM Orchestratorが完了済みAgentを再選択し、ループする可能性がある | 完了済み処理を再選択しないガードとrecursion limit等を説明する | 完了 |
 | I04 | 高 | 演習設計 | 演習の達成条件が分かりにくい | 各演習に期待結果または確認ポイントを追加する | 完了 |
-| I05 | 高 | 自動テスト | LLM APIを使うChapter 3・5・6・9は実行テストされていない | モックLLMを利用し、API通信・課金なしで主要フローをテストする | 未着手 |
+| I05 | 高 | 自動テスト | LLM APIを使うChapter 3・5・6・9は実行テストされていない | モックLLMを利用し、API通信・課金なしで主要フローをテストする | 完了 |
 | I06 | 中 | コード差分 | Chapterが進んだ際に何が新しく追加されたか追いにくい箇所がある | 前Chapterから追加・変更されたコードを明示する | 未着手 |
 | I07 | 中 | 用語統一 | Agent、AI Agent、Multi Agent、Orchestrator等の用語が増える | READMEまたは補足資料に用語集を追加する | 未着手 |
 | I08 | 中 | Python基礎 | TypedDict、デコレータ、辞書、型ヒント等がPython初心者には難しい可能性がある | 必要な箇所に短い「Python補足」を追加する | 未着手 |
