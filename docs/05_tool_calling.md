@@ -1,5 +1,23 @@
 # Chapter 5: Tool Callingを理解する
 
+## 前のChapterの限界と今回の解決
+
+Chapter 4ではToolを作りました。しかし、どのToolを使うかはまだ開発者が決めています。LLMとToolは存在していても、LLM自身が必要なToolを選ぶ仕組みはありません。
+
+```text
+Chapter 4
+Toolを実行できる
+        ↓
+しかしToolを選ぶのは人間
+        ↓
+Chapter 5
+LLMがToolと引数を選ぶ
+```
+
+このChapterではTool Callingを使い、「判断するLLM」と「実行するTool」を接続します。
+
+---
+
 ## この章で学ぶこと
 
 この章では、Chapter 4で作成したToolをLLMから利用する **Tool Calling** を学びます。
@@ -1277,6 +1295,19 @@ Toolを利用しない場合に、プログラムがどのように動くか確�
 > Tool Callingを繰り返しながら処理を進める仕組みは、今後Agentを作るChapterで学びます。
 
 ---
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- 足し算の依頼で `add` のTool Callを確認できる
+- 掛け算の依頼で `multiply` のTool Callを確認できる
+- Toolが不要な質問ではTool Callが生成されない場合があることを確認できる
+- Tool Callingは「Toolの選択と引数の決定」であり、Tool実行そのものではないと説明できる
+- 複数段階の処理では、現在の手動制御が複雑になることを確認できる
+
+LLMによるTool選択は非決定的なため、実行結果が毎回完全に同じになることを合格条件にはしません。
+
 
 ## 23. よくある勘違い
 
