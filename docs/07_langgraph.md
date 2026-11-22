@@ -1,5 +1,23 @@
 # Chapter 7: LangGraphを使う
 
+## 前のChapterの限界と今回の解決
+
+Chapter 6ではAgentが判断とTool実行の繰り返しを管理してくれるようになりました。一方、処理が複雑になると「どの処理があり、どの順番・条件で進むのか」をコードだけから把握しにくくなります。
+
+```text
+Chapter 6
+Agentが実行ループを管理
+        ↓
+処理フロー全体を明示的に設計したい
+        ↓
+Chapter 7
+State・Node・EdgeでGraphとして表現
+```
+
+このChapterではLangGraphを使い、データと処理フローを明示的に組み立てます。
+
+---
+
 ## この章で学ぶこと
 
 この章では、Agentの処理フローをGraphとして表現する **LangGraph** の基本を学びます。
@@ -984,6 +1002,16 @@ Conditional Edgeはどこか？
 説明できれば、LangGraphの基本概念を理解できています。
 
 ---
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- `add_exclamation` Nodeを追加し、期待した順序でStateを更新できる
+- コードを書く前に処理をGraphとして描ける
+- Graphを見てState・Node・Edge・Conditional Edgeを区別できる
+- 「State = データ、Node = 処理、Edge = 道、Graph = 全体」を自分の言葉で説明できる
+
 
 ## 14. まとめ
 
