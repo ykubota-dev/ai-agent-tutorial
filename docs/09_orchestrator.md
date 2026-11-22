@@ -756,7 +756,20 @@ def answer_agent(state):
 
 ```python
 def route_next(state):
-    return state["route"]
+    route = state["route"]
+
+    completed_routes = {
+        "research": bool(state["research_result"]),
+        "calculation": bool(state["calculation_result"]),
+        "answer": bool(state["final_answer"]),
+    }
+
+    if route in completed_routes and completed_routes[route]:
+        raise ValueError(
+            f"完了済みの処理が再選択されました: {route}"
+        )
+
+    return route
 ```
 
 という関数を作ります。
@@ -843,7 +856,20 @@ from agents.answer import answer_agent
 
 
 def route_next(state):
-    return state["route"]
+    route = state["route"]
+
+    completed_routes = {
+        "research": bool(state["research_result"]),
+        "calculation": bool(state["calculation_result"]),
+        "answer": bool(state["final_answer"]),
+    }
+
+    if route in completed_routes and completed_routes[route]:
+        raise ValueError(
+            f"完了済みの処理が再選択されました: {route}"
+        )
+
+    return route
 
 
 builder = StateGraph(AgentState)
@@ -950,6 +976,45 @@ flowchart TD
 ```
 
 だけです。
+
+---
+
+### 11.1 LLMの判断だけにループ防止を任せない
+
+Orchestratorのプロンプトには「すでに完了している処理は繰り返さない」と指示しています。しかし、LLMの判断は常に期待どおりになるとは限りません。
+
+調査済みなのに再び `research` が選択されると、同じ処理を繰り返す可能性があります。そのため、`route_next()` ではStateを確認し、完了済みの処理が再選択された場合はエラーとして停止します。
+
+さらに、Graph実行時には `recursion_limit` を設定します。
+
+```python
+result = graph.invoke(
+    initial_state,
+    config={
+        "recursion_limit": 10
+    }
+)
+```
+
+安全策は次の二段構えです。
+
+| 安全策 | 役割 |
+| --- | --- |
+| 完了済みrouteのガード | 同じ処理の再選択を検知して停止する |
+| `recursion_limit` | Graph全体が一定回数以上進み続けることを防ぐ |
+
+```text
+LLM
+「完了済み処理を選ばない」と判断
+        ↓
+Python側のガード
+再選択を検知したら停止
+        ↓
+recursion_limit
+Graph全体の実行回数にも上限
+```
+
+AI Agentでは、**LLMが必ず正しく判断することを前提にせず、プログラム側でも実行範囲を制御する**ことが重要です。
 
 ---
 
