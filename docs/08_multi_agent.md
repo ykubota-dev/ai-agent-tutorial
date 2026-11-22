@@ -204,6 +204,30 @@ Answer
 
 ---
 
+### このChapterで「Agent」と呼んでいるもの
+
+ここで1つ、Chapter 6との違いを整理します。
+
+Chapter 6では、LLMがToolを選びながら処理を進めるAgentを作りました。一方、このChapterの `research_agent()`、`calculation_agent()`、`answer_agent()` は、**Agentの役割を理解するために単純なPython関数として実装したLangGraphのNode**です。
+
+```text
+Chapter 6
+LLM + Tool + 実行制御
+        ↓
+      Agent
+
+Chapter 8
+役割ごとのPython関数
+        ↓
+LangGraphのNodeとしてAgent役を表現
+```
+
+つまり、このChapterでは「複数の役割に処理を分け、Stateを介して連携する」というMulti Agentの**構造**を学ぶことを優先しています。
+
+Research Agentなどの名前は役割を表していますが、この時点では各NodeがLLMによって自律的に判断するわけではありません。Chapter 9では、Toolを利用するLLM Agentを組み込み、より実際のAI Agentに近い構成へ発展させます。
+
+---
+
 ## 4. Agent間で情報を共有する
 
 Multi Agentでは、Agent同士で情報を引き継ぐ必要があります。
