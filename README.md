@@ -47,6 +47,16 @@ cp .env.example .env
 
 Windowsでは仮想環境の有効化に `.venv\\Scripts\\activate` を使用してください。APIキーなどの値は `.env` に設定し、このファイルを共有・コミットしないでください。
 
+## サンプルコードの実行
+
+サンプルコードは、すべて**リポジトリのルートディレクトリから**実行します。例えばChapter 3は次のように実行します。
+
+```bash
+python examples/chapter03_llm/main.py
+```
+
+各 `examples/chapterXX_*` ディレクトリのREADMEにも同じ実行方法を記載しています。
+
 ## サンプルコードのテスト
 
 リポジトリのルートで、次のコマンドを実行します。
