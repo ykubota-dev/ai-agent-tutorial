@@ -646,6 +646,19 @@ response
 response.content
 ```
 
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- 質問文を変更すると、LLMへ渡される内容も変わる
+- 回答形式を文章で指定できる
+- `question → llm.invoke() → response.content` の流れを説明できる
+- APIキーをPythonコードへ直接書かずに実行できる
+
+LLMの文章は実行ごとに変わる可能性があるため、教材の例文と完全一致する必要はありません。
+
+
 ## 13. よくあるエラー
 
 ### ModuleNotFoundError
