@@ -1,10 +1,10 @@
 from langgraph.graph import StateGraph, START, END
 
-from state import AgentState
+from state import GraphState
 
 
 # messageの先頭に「Hello」を付けるNode
-def hello_node(state: AgentState):
+def hello_node(state: GraphState):
     name = state["message"]
 
     return {
@@ -13,7 +13,7 @@ def hello_node(state: AgentState):
 
 
 # messageを大文字にするNode
-def upper_node(state: AgentState):
+def upper_node(state: GraphState):
     message = state["message"]
 
     return {
@@ -22,7 +22,7 @@ def upper_node(state: AgentState):
 
 
 # Graphを作成する
-builder = StateGraph(AgentState)
+builder = StateGraph(GraphState)
 
 
 # Nodeを登録する

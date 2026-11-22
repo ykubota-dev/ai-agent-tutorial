@@ -151,7 +151,7 @@ APIキーが外部に漏れると、第三者にAPIを利用される危険が�
 
 という形で管理します。
 
-### 4. .envファイルを作る
+## 4. .envファイルを作る
 
 この教材では、APIキーを.envファイルで管理します。  
 プロジェクトのルートディレクトリに.envを作成します。
@@ -272,7 +272,7 @@ pip list
 pip install -r requirements.txt
 ```
 
-## 7. Chapter 3のディレクトリへ移動する
+## 7. Chapter 3の実行場所を確認する
 
 今回使用するプログラムは、次の場所に作成します。
 
@@ -283,15 +283,12 @@ examples/
     └── main.py
 ```
 
-Terminalから移動します。
+この教材では、サンプルコードをリポジトリのルートディレクトリから実行します。
+Chapterごとのディレクトリへ移動する必要はありません。
 
-```text
-cd examples/chapter03_llm
-```
+現在地がリポジトリのルートであることを確認します。
 
-現在のディレクトリを確認します。
-
-```text
+```bash
 pwd
 ```
 
@@ -329,7 +326,7 @@ print(response.content)
 Terminalから次のコマンドを実行します。
 
 ```bash
-python main.py
+python examples/chapter03_llm/main.py
 ```
 
 環境によっては、
@@ -380,7 +377,7 @@ load_dotenv()
 を実行することで、.envに設定した値を環境変数として読み込めるようにします。  
 今回の場合、
 
-```python
+```text
 OPENAI_API_KEY=...
 ```
 
@@ -556,8 +553,8 @@ response = llm.invoke(
 
 として実行します。
 
-```python
-python main.py
+```bash
+python examples/chapter03_llm/main.py
 ```
 
 次に、
@@ -595,7 +592,7 @@ PythonとJavaの違いを、初心者向けに表形式で説明してくださ�
 
 入力する文章によって、LLMの回答方法を制御できることを確認してください。
 
-## 演習3：変数に分ける
+### 演習3：変数に分ける
 
 現在は、
 
@@ -685,12 +682,6 @@ pip install -r requirements.txt
 ```text
 .env
 ```
-
-確認方法
-
-プロジェクトのルートディレクトリに、
-
-.env
 
 が存在することを確認します。  
 さらに、

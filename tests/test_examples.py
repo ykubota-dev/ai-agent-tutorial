@@ -50,6 +50,31 @@ class ExampleTests(unittest.TestCase):
         self.assertTrue(any(isinstance(node, ast.For) for node in ast.walk(tree)))
         self.assertTrue(any(isinstance(node, ast.If) for node in ast.walk(tree)))
 
+    def test_example_readmes_use_root_execution_and_link_docs(self):
+        for chapter in range(3, 10):
+            folder = next(EXAMPLES.glob(f"chapter{chapter:02d}_*"))
+            readme = folder / "README.md"
+            content = readme.read_text(encoding="utf-8")
+            with self.subTest(chapter=chapter):
+                expected_command = f"python {folder.relative_to(ROOT).as_posix()}/main.py"
+                self.assertIn(expected_command, content)
+                self.assertIn("../../docs/", content)
+
+    def test_chapter07_uses_graph_state_name(self):
+        state_path = EXAMPLES / "chapter07_langgraph" / "state.py"
+        graph_path = EXAMPLES / "chapter07_langgraph" / "graph.py"
+        self.assertIn("class GraphState", state_path.read_text(encoding="utf-8"))
+        self.assertIn("GraphState", graph_path.read_text(encoding="utf-8"))
+        self.assertNotIn("AgentState", state_path.read_text(encoding="utf-8"))
+
+    def test_requirements_are_version_pinned(self):
+        requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8").splitlines()
+        packages = [line for line in requirements if line and not line.startswith("#")]
+        self.assertTrue(packages)
+        for package in packages:
+            with self.subTest(package=package):
+                self.assertIn("==", package)
+
     def test_local_graph_examples(self):
         # Chapter 7/8はAPIキー不要。依存関係が未導入ならスキップする。
         try:
@@ -60,8 +85,8 @@ class ExampleTests(unittest.TestCase):
             folder = next(EXAMPLES.glob(f"chapter{chapter:02d}_*"))
             with self.subTest(chapter=chapter):
                 result = subprocess.run(
-                    [sys.executable, "main.py"],
-                    cwd=folder, capture_output=True, text=True, timeout=30,
+                    [sys.executable, str((folder / "main.py").relative_to(ROOT))],
+                    cwd=ROOT, capture_output=True, text=True, timeout=30,
                 )
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertTrue(result.stdout.strip())

@@ -1,5 +1,5 @@
 from typing import TypedDict
 
 
-class AgentState(TypedDict):
+class GraphState(TypedDict):
     message: str
