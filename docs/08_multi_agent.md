@@ -1,5 +1,23 @@
 # Chapter 8: Multi Agent構成を作る
 
+## 前のChapterの限界と今回の解決
+
+Chapter 7では処理をGraphとして明示的に設計できるようになりました。しかし、調査・計算・回答生成のように性質の異なる処理を1つの担当へ集めると、責務が大きくなり、変更理由も混ざります。
+
+```text
+Chapter 7
+Graphで処理フローを表現
+        ↓
+異なる役割を1つに集めると責務が大きい
+        ↓
+Chapter 8
+役割ごとにAgent役のNodeを分ける
+```
+
+このChapterでは、役割分担とStateによる情報共有というMulti Agentの基本構造を学びます。
+
+---
+
 ## この章で学ぶこと
 
 この章では、複数のAgentに役割を分ける **Multi Agent** の基本を学びます。
@@ -990,6 +1008,17 @@ review_resultを書く
 という処理を実装してみましょう。
 
 ---
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- 各Agent役のNodeについて「何を読む・何をする・何を書く」を説明できる
+- Review Agent用のStateを追加できる
+- Review AgentをNodeとしてGraphへ登録できる
+- Answer → Review → ENDとなるEdgeを設定できる
+- Chapter 8のAgent役は、Multi Agent構造を学ぶために単純化したLangGraph Nodeであると説明できる
+
 
 ## 14. まとめ
 

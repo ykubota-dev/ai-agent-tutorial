@@ -1,5 +1,23 @@
 # Chapter 3: PythonからLLMを呼び出す
 
+## 前のChapterから今回へ
+
+Chapter 2では、Pythonを実行できる開発環境を準備しました。しかし、まだPythonからLLMへ依頼する処理はありません。
+
+```text
+Chapter 2
+開発環境は準備できた
+        ↓
+しかしLLMとは接続していない
+        ↓
+Chapter 3
+PythonからLLMを呼び出す
+```
+
+このChapterでは、今後のAgent開発の土台となる「PythonからLLMへ入力を渡し、回答を受け取る」流れを作ります。
+
+---
+
 ## この章で学ぶこと
 
 この章では、PythonプログラムからLLMを呼び出して、質問に対する回答を取得します。
@@ -627,6 +645,19 @@ response
    v
 response.content
 ```
+
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- 質問文を変更すると、LLMへ渡される内容も変わる
+- 回答形式を文章で指定できる
+- `question → llm.invoke() → response.content` の流れを説明できる
+- APIキーをPythonコードへ直接書かずに実行できる
+
+LLMの文章は実行ごとに変わる可能性があるため、教材の例文と完全一致する必要はありません。
+
 
 ## 13. よくあるエラー
 
