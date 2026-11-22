@@ -20,7 +20,7 @@ def chapter_imports(chapter_dir: Path):
     local_modules = {
         name: module
         for name, module in sys.modules.items()
-        if name == "tools" or name.startswith(("tools.", "agents.", "state", "graph"))
+        if name in {"tools", "state", "graph"} or name.startswith(("tools.", "agents."))
     }
     for name in local_modules:
         sys.modules.pop(name, None)
@@ -29,7 +29,7 @@ def chapter_imports(chapter_dir: Path):
     finally:
         sys.path.remove(str(chapter_dir))
         for name in list(sys.modules):
-            if name == "tools" or name.startswith(("tools.", "agents.", "state", "graph")):
+            if name in {"tools", "state", "graph"} or name.startswith(("tools.", "agents.")):
                 sys.modules.pop(name, None)
         sys.modules.update(local_modules)
 
@@ -117,6 +117,60 @@ class LLMExampleTests(unittest.TestCase):
 
         self.assertEqual(result, {"route": "research"})
         fake_router.invoke.assert_called_once()
+
+    def test_chapter09_research_agent_updates_state_from_mocked_agent(self):
+        chapter = EXAMPLES / "chapter09_orchestrator"
+        fake_agent = MagicMock()
+        fake_agent.invoke.return_value = {
+            "messages": [AIMessage(content="調査結果")]
+        }
+
+        with chapter_imports(chapter), \
+             patch("langchain_openai.ChatOpenAI"), \
+             patch("langchain.agents.create_agent", return_value=fake_agent):
+            module = runpy.run_path(
+                str(chapter / "agents" / "research.py"),
+                run_name="chapter09_research_test",
+            )
+            result = module["research_agent"](
+                {
+                    "user_request": "移動方法を調べてください。",
+                    "research_result": "",
+                    "calculation_result": "",
+                    "final_answer": "",
+                    "route": "research",
+                }
+            )
+
+        self.assertEqual(result, {"research_result": "調査結果"})
+        fake_agent.invoke.assert_called_once()
+
+    def test_chapter09_calculation_agent_updates_state_from_mocked_agent(self):
+        chapter = EXAMPLES / "chapter09_orchestrator"
+        fake_agent = MagicMock()
+        fake_agent.invoke.return_value = {
+            "messages": [AIMessage(content="38,000円です。")]
+        }
+
+        with chapter_imports(chapter), \
+             patch("langchain_openai.ChatOpenAI"), \
+             patch("langchain.agents.create_agent", return_value=fake_agent):
+            module = runpy.run_path(
+                str(chapter / "agents" / "calculation.py"),
+                run_name="chapter09_calculation_test",
+            )
+            result = module["calculation_agent"](
+                {
+                    "user_request": "合計を計算してください。",
+                    "research_result": "交通費20,000円、ホテル代18,000円",
+                    "calculation_result": "",
+                    "final_answer": "",
+                    "route": "calculation",
+                }
+            )
+
+        self.assertEqual(result, {"calculation_result": "38,000円です。"})
+        fake_agent.invoke.assert_called_once()
 
     def test_chapter09_answer_agent_uses_mocked_response(self):
         chapter = EXAMPLES / "chapter09_orchestrator"
