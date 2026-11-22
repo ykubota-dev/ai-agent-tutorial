@@ -972,6 +972,9 @@ result = graph.invoke(
         "calculation_result": "",
         "final_answer": "",
         "route": ""
+    },
+    config={
+        "recursion_limit": 10
     }
 )
 
