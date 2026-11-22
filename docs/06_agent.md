@@ -1,5 +1,23 @@
 # Chapter 6: 単一Agentを作る
 
+## 前のChapterの限界と今回の解決
+
+Chapter 5では、LLMがToolを選ぶTool Callingを実装しました。しかし、Tool Callの確認、Toolの実行、結果の返却、再判断という制御をPython側で1つずつ書いていました。処理が増えるほど、この制御は複雑になります。
+
+```text
+Chapter 5
+Tool Callingを手動で制御
+        ↓
+判断と実行を繰り返すコードが複雑になる
+        ↓
+Chapter 6
+Agentに実行ループを任せる
+```
+
+このChapterでは、LLM・Tool・実行制御をAgentとしてまとめます。
+
+---
+
 ## この章で学ぶこと
 
 この章では、これまで学んだ **LLM・Tool・Tool Calling** を組み合わせて、1つのAgentを作ります。
@@ -880,6 +898,17 @@ a - b
 Agentが計算Toolを利用せず、そのまま回答できるか確認してください。
 
 ---
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- 単純な計算依頼をAgentがToolを利用して処理できる
+- `10 + 20` の結果に3を掛けるような複数段階の処理を完了できる
+- 新しい `subtract` ToolをAgentへ追加できる
+- Toolが不要な依頼では計算Toolを使わず回答できる
+- Chapter 5では自分で書いていた実行ループをAgentが管理していると説明できる
+
 
 # 17. Agentを理解するための重要な3つのポイント
 
