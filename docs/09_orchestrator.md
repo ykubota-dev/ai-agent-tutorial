@@ -1,5 +1,23 @@
 # Chapter 9: Orchestrator構成を作る
 
+## 前のChapterの限界と今回の解決
+
+Chapter 8では役割ごとに処理を分けました。しかし、Research → Calculation → Answerという実行順序は固定です。依頼によって不要な処理があっても、同じ順序で進んでしまいます。
+
+```text
+Chapter 8
+役割分担はできた
+        ↓
+しかし実行順序は固定
+        ↓
+Chapter 9
+Orchestratorが次の担当を動的に決める
+```
+
+このChapterでは、ユーザーの依頼と現在のStateを基に次のAgentを選ぶOrchestrator構成へ発展させます。
+
+---
+
 ## この章で学ぶこと
 
 この章では、複数のAgentへ仕事を振り分ける **Orchestrator** を作ります。
@@ -1235,6 +1253,17 @@ flowchart TD
 この演習ができれば、新しい役割を持つAgentをOrchestrator構成へ追加する基本を理解できています。
 
 ---
+
+### 演習の確認ポイント
+
+次を確認できれば、このChapterの演習は完了です。
+
+- 調査だけ、計算だけ、調査＋計算で異なるrouteが選択されることをログから確認できる
+- 最終回答完成後に `end` が選択され、Graphが終了することを確認できる
+- Review Agentを追加する場合、State・Node・route・Conditional Edgeの変更箇所を説明できる
+- Orchestrator自身は調査や計算を行わず、次の担当を決める責務を持つと説明できる
+- LLMのroute判断だけに終了制御を依存せず、コード側のガードと実行上限が必要な理由を説明できる
+
 
 ## 14. まとめ
 
