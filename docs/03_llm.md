@@ -1,5 +1,23 @@
 # Chapter 3: PythonからLLMを呼び出す
 
+## 前のChapterから今回へ
+
+Chapter 2では、Pythonを実行できる開発環境を準備しました。しかし、まだPythonからLLMへ依頼する処理はありません。
+
+```text
+Chapter 2
+開発環境は準備できた
+        ↓
+しかしLLMとは接続していない
+        ↓
+Chapter 3
+PythonからLLMを呼び出す
+```
+
+このChapterでは、今後のAgent開発の土台となる「PythonからLLMへ入力を渡し、回答を受け取る」流れを作ります。
+
+---
+
 ## この章で学ぶこと
 
 この章では、PythonプログラムからLLMを呼び出して、質問に対する回答を取得します。
