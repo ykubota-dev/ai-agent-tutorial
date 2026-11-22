@@ -75,6 +75,16 @@ class ExampleTests(unittest.TestCase):
             with self.subTest(package=package):
                 self.assertIn("==", package)
 
+    def test_chapter09_has_loop_safety_guards(self):
+        graph_path = EXAMPLES / "chapter09_orchestrator" / "graph.py"
+        main_path = EXAMPLES / "chapter09_orchestrator" / "main.py"
+        graph_content = graph_path.read_text(encoding="utf-8")
+        main_content = main_path.read_text(encoding="utf-8")
+
+        self.assertIn("completed_routes", graph_content)
+        self.assertIn("完了済みの処理が再選択されました", graph_content)
+        self.assertIn('"recursion_limit": 10', main_content)
+
     def test_local_graph_examples(self):
         # Chapter 7/8はAPIキー不要。依存関係が未導入ならスキップする。
         try:
