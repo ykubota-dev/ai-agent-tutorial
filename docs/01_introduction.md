@@ -394,3 +394,9 @@ Answer
 ### Chapter 2：開発環境を作る
 
 VS Code、Python、仮想環境を準備し、AI Agentを実装するための開発環境を構築していきます。
+
+---
+
+## Chapterナビゲーション
+
+← [教材ホーム](../README.md) ｜ [Chapter 2：開発環境](02_setup.md) →

@@ -1631,3 +1631,9 @@ Answer
 Chapter 5ではTool Callingの仕組みを理解するために、処理を1つずつ自分で実装しました。
 
 次のChapterでは、この仕組みをAgentとしてまとめていきます。
+
+---
+
+## Chapterナビゲーション
+
+← [Chapter 4：Tool](04_tool.md) ｜ [Chapter 6：単一Agent](06_agent.md) →
