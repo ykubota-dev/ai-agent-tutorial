@@ -1474,3 +1474,9 @@ Orchestratorによる動的なタスク振り分け
 > **誰に仕事を任せるかを判断し、全体の処理を制御するAgentです。**
 
 この考え方を理解できれば、この教材で目標としていたAI Agentの基本構成は完成です。
+
+---
+
+## Chapterナビゲーション
+
+← [Chapter 8：Multi Agent](08_multi_agent.md) ｜ [教材ホームへ戻る](../README.md) →
