@@ -1217,3 +1217,9 @@ Chapter 6で学んだ、
 ```
 
 というAgentの基本ループを、Chapter 7では**Graphとして理解していきます。**
+
+---
+
+## Chapterナビゲーション
+
+← [Chapter 5：Tool Calling](05_tool_calling.md) ｜ [Chapter 7：LangGraph](07_langgraph.md) →
